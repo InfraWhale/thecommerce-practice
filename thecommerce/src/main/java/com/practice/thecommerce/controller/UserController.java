@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     @PostMapping("/api/user/join")
-    public ResponseEntity joinUser(@RequestBody JoinUserRequest request) {
+    public ResponseEntity joinUser(@RequestBody @Valid JoinUserRequest request) {
 
         User user = new User(request);
         Long id = userService.join(user);
@@ -30,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/api/user/list")
-    public Page<ListUserResponse> listUser(@PageableDefault(size = Integer.MAX_VALUE)
+    public Page<ListUserResponse> listUser(@PageableDefault(size = 5)
                                                @SortDefault.SortDefaults(
                                                        {@SortDefault(sort = "joinDate", direction = Sort.Direction.ASC)
                                                        , @SortDefault(sort = "name", direction = Sort.Direction.ASC)

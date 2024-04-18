@@ -52,6 +52,7 @@ public class UserService {
             response.setEmailAddress(request.getEmailAddress());
         }
         user.setUpdateDate(now());
+        response.setUpdateDate(now());
 
         return response;
     }
