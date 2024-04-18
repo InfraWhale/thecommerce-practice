@@ -129,7 +129,7 @@ public class UserControllerTest {
                 )).hasCause(new IllegalStateException("이미 존재하는 아이디입니다."));
     }
 
-    @DisplayName("회원 목록 조회 성공")
+    @DisplayName("회원 목록 조회 쿼리스트링 없이")
     @Test
     public void listUserSuccess() throws Exception {
         //given
@@ -149,8 +149,34 @@ public class UserControllerTest {
 
         //then
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalPages").value(2))
-                .andExpect(jsonPath("$.numberOfElements").value(5));
+                .andExpect(jsonPath("$.pageable.pageNumber").value(0))
+                .andExpect(jsonPath("$.pageable.pageSize").value(5))
+                .andExpect(jsonPath("$.totalPages").value(2));
+    }
+
+    @DisplayName("회원 목록 조회 쿼리스트링 써서")
+    @Test
+    public void listUserSuccess2() throws Exception {
+        //given
+        String url = "/api/user/list?page=1&pageSize=4";
+        for (int i = 0; i < 10; i++) {
+            String loginId = "id" + i;
+            String password = "password" + i;
+            String nickName = "nickName" + i;
+            String name = "name" + i;
+            String hp = "01011112222" +i;
+            String emailAddress = "email"+ i +"@gmail.com";
+            userRepository.save(new User(new JoinUserRequest(loginId, password, nickName, name, hp, emailAddress)));
+        }
+
+        //when
+        ResultActions result = mockMvc.perform(get(url));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.pageable.pageNumber").value(1))
+                .andExpect(jsonPath("$.pageable.pageSize").value(4))
+                .andExpect(jsonPath("$.totalPages").value(3));
     }
 
     @DisplayName("회원 수정 성공")
