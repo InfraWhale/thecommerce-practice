@@ -19,10 +19,10 @@ import static org.springframework.util.StringUtils.hasText;
 public class UserService {
     private final UserRepository userRepository;
 
-    public Long join(User user) {
+    public String join(User user) {
         validateDuplicateUser(user);
         userRepository.save(user);
-        return user.getId();
+        return user.getLoginId();
     }
 
     public UpdateUserResponse update(String loginId, UpdateUserRequest request) {
